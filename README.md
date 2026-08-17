@@ -4,7 +4,7 @@
 
 # matching islands
 
-**Comparative analysis of genomic islands predicted by GIPSy2**
+**Comparative genomic island analysis based on GIPSy2 predictions.**
 
 `matching_islands.py` is a Python pipeline for the comparative analysis of genomic islands predicted by **GIPSy2**. The pipeline supports both **protein-level** and **nucleotide-level** comparisons and generates similarity matrices, similarity networks, containment analyses, heatmaps, dendrograms, and Louvain community clustering.
 
