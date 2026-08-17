@@ -541,8 +541,7 @@ GitHub repository: https://github.com/depaulaj/matching-islands
 
 ### GIPSy2
 
-Rodrigues, D.L.N., Sodrzeieski, P.A., Parise, D. et al. (2026). GIPSy2: high-performance and scalable genomic island prediction software. *Scientific Reports*.  
-https://doi.org/10.1038/s41598-026-53034-0
+Rodrigues, D.L.N., Sodrzeieski, P.A., Parise, D. et al. (2026). GIPSy2: high-performance and scalable genomic island prediction software. *Scientific Reports*. https://doi.org/10.1038/s41598-026-53034-0
 
 ## License
 This repository is licensed under the MIT License.
