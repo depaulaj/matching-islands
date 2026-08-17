@@ -497,10 +497,11 @@ Assigns each island to a detected community.
 
 ---
 
-# Example: complete protein analysis
+# Example: complete analysis
 
-A complete virulence-island analysis including the similarity heatmap, Louvain clustering, and shared/exclusive protein identification can be run with:
+A complete island analysis including the similarity heatmap, Louvain clustering, and shared/exclusive protein identification can be run with:
 
+For a complete protein-level analysis:
 ```bash
 python3 matching_islands.py -i GIPSy2_results/ -p --all --plot --louvain --shared
 ```
