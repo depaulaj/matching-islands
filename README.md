@@ -530,7 +530,18 @@ python3 matching_islands.py -i GIPSy2_results/ -n --all --plot --louvain
 `matching_islands.py`
 Version: **17 August 2026**
 
-Comparative genomic island analysis based on GIPSy2 predictions.
+## Citation
+
+If you use **matching_islands** in your research, please cite this repository and the GIPSy2 software article:
+
+### matching_islands
+
+GitHub repository: https://github.com/depaulaj/matching-islands
+
+### GIPSy2
+
+Rodrigues, D.L.N., Sodrzeieski, P.A., Parise, D. et al. (2026). GIPSy2: high-performance and scalable genomic island prediction software. *Scientific Reports*.  
+https://doi.org/10.1038/s41598-026-53034-0
 
 ## License
 This repository is licensed under the MIT License.
