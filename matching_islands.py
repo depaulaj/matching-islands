@@ -188,6 +188,38 @@ def write_protein_comparison(seqs1, seqs2, high_matches, unmatched1, unmatched2,
     SeqIO.write(exclusive_a, output_directory / "exclusive_A.faa", "fasta")
     SeqIO.write(exclusive_b, output_directory / "exclusive_B.faa", "fasta")
 
+
+def generate_shared_protein_files(results, seq_files, island_output, island_type):
+    """Generate shared and exclusive protein FASTA files only for island pairs containing at least one high-similarity shared protein."""
+
+    protein_comparison_dir = island_output / "protein_comparison"
+    protein_comparison_dir.mkdir(exist_ok=True)
+    print(f"Generating shared and exclusive proteins for "f"{island_type} island pairs...")
+    generated_pairs = 0
+    for result in results: 
+        (key1, key2, summary, avg_identity, cov_ab, cov_ba, n1, n2, high_matches, unmatched1, unmatched2) = result
+
+        # Skip pairs without any shared protein meeting the identity threshold.
+        if high_matches is None or not high_matches:
+            continue
+
+        island_a = simplify_matrix_id(key1)
+        island_b = simplify_matrix_id(key2)
+        pair_directory = (protein_comparison_dir / f"{island_a}__{island_b}")
+        seqs1 = read_fasta_sequences(seq_files[key1])
+        seqs2 = read_fasta_sequences(seq_files[key2])
+
+        write_protein_comparison(seqs1, seqs2, high_matches, unmatched1, unmatched2, pair_directory, island_a, island_b)
+
+        generated_pairs += 1
+
+    if generated_pairs == 0:
+        print("No island pairs with shared proteins above the "f"{PROTEIN_IDENTITY_THRESHOLD:.0f}% identity threshold were found.")
+    else:
+        print(f"Protein comparison files generated for "f"{generated_pairs} island pair(s).")
+    return protein_comparison_dir
+
+
 def _protein_hits_between(query_island, target_island, seqs_by_island, diamond_hits):
     """
         Compare each protein from query_island against ALL proteins from
@@ -880,11 +912,36 @@ def main():
 
         if args.from_results:
             print(f"Using existing results for {island_type}...")
+            if args.shared and mode == "protein":
+                blast_output = island_output / "diamond_allvsall.tsv"
+                if not blast_output.exists():
+                    parser.error(f"Existing DIAMOND alignment file not found:\n"f"{blast_output}\n\n""The --from-results --shared combination requires ""diamond_allvsall.tsv generated during a previous analysis.")
+                print("Loading existing DIAMOND all-vs-all alignment results...")
+                alignment_hits = parse_alignment_output(blast_output, mode)
+                keys = sorted(seq_files.keys())
+                tasks = [
+                    (
+                        keys[i],
+                        keys[j],
+                        seq_files,
+                        alignment_hits
+                    )
+                    for i in range(len(keys))
+                    for j in range(i + 1, len(keys))
+                ]
+                print(f"Reconstructing protein comparisons using "f"{cpu_count()} CPU cores...")
+                print(f"Total pairwise comparisons: {len(tasks)}")
+                with Pool(cpu_count()) as pool:
+                    results = pool.map(process_pair_protein,tasks)
+                generate_shared_protein_files(results, seq_files, island_output, island_type)
+                print(f"Shared and exclusive protein files generated successfully.")
+
             if args.plot:
                 if not matrix_file.exists():
                     parser.error(f"Similarity matrix not found:\n{matrix_file}")
                 similarity_matrix = pd.read_csv(matrix_file, sep="\t", index_col=0)
                 generate_similarity_heatmap(similarity_matrix, island_output / island_type.lower())
+
             if args.louvain:
                 if not renamed_network.exists():
                     parser.error(f"Network file not found:\n{renamed_network}")
@@ -925,20 +982,7 @@ def main():
             results = pool.map(process_pair_func, tasks)
 
         if args.shared and mode == 'protein':
-            protein_comparison_dir = island_output / "protein_comparison"
-            protein_comparison_dir.mkdir(exist_ok=True)
-            print(f"Generating shared and exclusive proteins for {island_type} island pairs...")
-            for result in results:
-                key1, key2, summary, avg_identity, cov_ab, cov_ba, n1, n2, high_matches, unmatched1, unmatched2 = result
-                if high_matches is None or not high_matches:
-                    continue
-                island_a = simplify_matrix_id(key1)
-                island_b = simplify_matrix_id(key2)
-                pair_directory = protein_comparison_dir / f"{island_a}__{island_b}"
-                seqs1 = read_fasta_sequences(seq_files[key1])
-                seqs2 = read_fasta_sequences(seq_files[key2])
-                write_protein_comparison(seqs1, seqs2, high_matches, unmatched1, unmatched2,
-                                         pair_directory, island_a, island_b)
+            generate_shared_protein_files(results, seq_files, island_output, island_type)
 
         with open(summary_file, "w", encoding="utf-8") as f:
             for res in results:
