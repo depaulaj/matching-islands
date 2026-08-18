@@ -658,9 +658,9 @@ def generate_similarity_heatmap(matrix, output_prefix, max_cells_with_text=100):
         elif n <= 45:
             cell_fontsize = 9
         elif n <= 80:
-            cell_fontsize = 7
+            cell_fontsize = 6
         else:
-            cell_fontsize = 5
+            cell_fontsize = 4
         for i in range(n):
             for j in range(n):
                 ax_heat.text(j, i, f"{ordered_matrix.iloc[i, j]:.1f}",
@@ -670,17 +670,17 @@ def generate_similarity_heatmap(matrix, output_prefix, max_cells_with_text=100):
     ax_heat.set_xticks(np.arange(n))
     ax_heat.set_yticks(np.arange(n))
     if n <= 30:
-        label_font = 15
-    elif n <= 45:
-        label_font = 10
-    elif n <= 80:
         label_font = 8
-    elif n <= 150:
+    elif n <= 45:
+        label_font = 7
+    elif n <= 80:
         label_font = 6
-    elif n <= 300:
+    elif n <= 150:
         label_font = 4
-    else:
+    elif n <= 300:
         label_font = 2
+    else:
+        label_font = 1
     ax_heat.set_xticklabels(ordered_matrix.columns, fontsize=label_font, rotation=90)
     ax_heat.set_yticklabels(ordered_matrix.index, fontsize=label_font)
     ax_heat.yaxis.tick_right()
@@ -690,7 +690,7 @@ def generate_similarity_heatmap(matrix, output_prefix, max_cells_with_text=100):
     cax = fig.add_axes([0.04, 0.15, 0.02, 0.60])
     colorbar = fig.colorbar(image, cax=cax)
     colorbar.set_label("Similarity (%)")
-    plt.subplots_adjust(left=0.10, right=0.95, bottom=0.05, top=0.98,
+    plt.subplots_adjust(left=0.10, right=0.85, bottom=0.15, top=0.95,
                         wspace=0.02, hspace=0.02)
     dpi = 300 if n > 100 else 100
     plt.savefig(f"{output_prefix}_heatmap.pdf", dpi=dpi)
