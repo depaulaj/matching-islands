@@ -358,8 +358,6 @@ For each island category, the pipeline can generate:
 *_island_pairwise_coverage.csv
 *_similarity_matrix.tsv
 renamed_*_cytoscape_network_classified.csv
-*_island_containment_network.pdf
-*_island_containment_network_interpretation.txt
 ```
 
 With `--plot`:
@@ -469,22 +467,6 @@ For nucleotide analyses, island size is represented as the number of base pairs.
 
 ---
 
-### Containment network
-
-`*_island_containment_network.pdf`
-
-Graphical representation of detected containment relationships between genomic islands.
-
-The accompanying:
-
-```text
-*_island_containment_network_interpretation.txt
-```
-
-provides the criteria and relationships represented in the network.
-
----
-
 ### Louvain clustering
 
 `island_communities.tsv`
@@ -539,7 +521,7 @@ If you use **matching_islands** in your research, please cite this repository an
 
 GitHub repository: https://github.com/depaulaj/matching-islands
 
-### GIPSy2
+### GIPSy2 article
 
 Rodrigues, D.L.N., Sodrzeieski, P.A., Parise, D. et al. (2026). GIPSy2: high-performance and scalable genomic island prediction software. *Scientific Reports*. https://doi.org/10.1038/s41598-026-53034-0
 
