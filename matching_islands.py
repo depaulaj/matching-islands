@@ -11,7 +11,6 @@ Generates similarity matrices, networks, heatmaps, community detection
 
 Author: Janaíne Aparecida de Paula
 Date: 17/08/2026
-Version: best-hit protein averaging + reciprocal nucleotide HSP aggregation.
 """
 
 from Bio import SeqIO
